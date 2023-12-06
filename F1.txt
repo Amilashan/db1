@@ -1,0 +1,142 @@
+
+
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+//npm install firebase --save
+//npm install firebase-admin --save
+
+//add data
+
+const db = admin.firestore();
+const data ={
+id:1,
+name:"supun",
+age:33
+}
+
+db.collection("student").doc(data.id.toString()).set(data);
+
+//node ./index.js
+
+
+//Read Data
+
+const db = admin.firestore();
+let studentDetails = db.collection("student");
+studentDetails.get().then((QuerySnapshot) =>{
+QuerySnapshot.forEach(document => {
+console.log(document.data());
+
+        
+})
+})
+
+//node ./index.js
+
+
+
+//update 
+
+const db = admin.firestore();
+
+const data ={
+id:1,
+name:"kasun",
+age:25,
+Salary:30000
+ }
+    
+db.collection("student").doc(data.id.toString()).set(data);
+ 
+
+
+
+//create multiple data(batch data)
+
+const batch = db.batch();
+const Details6 = db.collection("Details").doc("6");
+const Details7 = db.collection("Details").doc("7");
+const Details8 = db.collection("Details").doc("8");
+const Details9 = db.collection("Details").doc("9");
+const Details10 = db.collection("Details").doc("10");
+
+batch.set(Details6, { id: 6, name: "Mala", Age: 22 });
+batch.set(Details7, { id: 7, name: "Kamala", Age: 28 });
+batch.set(Details8, { id: 8, name: "Jhon", Age: 27 });
+batch.set(Details9, { id: 9, name: "Jerry", Age: 30 });
+batch.set(Details10, { id: 10, name: "Nimal", Age: 29 });
+
+batch.commit().then(res => {
+console.log("Batch data Run")
+ });
+
+
+//delete
+
+const db = admin.firestore();
+db.collection("student").doc("1").delete().then(res =>{
+console.log("Delete Success")
+})
+
+//node .index.js
+
+
+
+Faker.............
+
+
+var admin = require("firebase-admin");
+//infaker only
+const { faker } = require('@faker-js/faker');
+
+var serviceAccount = require("./serviceAccountKey.json");
+const { QuerySnapshot } = require("@google-cloud/firestore");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+//npm install @faker-js/faker --save-dev
+
+//add to data
+
+const db=admin.firestore();
+for (let index = 0; index <10; index++){
+  db.collection("employee").doc(index.toString()).set({
+    id:index,
+    name:faker.person.firstName(),
+    gender: faker.person.sex()
+  })
+}
+
+//
+
+db.collection("employee")
+.orderBy('id')
+.startAt(0)
+.endAt(5)
+.get()
+.then(snapShot => {
+snapShot.forEach(element => {
+console.log(element.data().name);
+ });
+ })
+.catch(error =>{
+ console.error("Error retriving data", error);
+ });
+
+
+
+
+
+
+
+
+

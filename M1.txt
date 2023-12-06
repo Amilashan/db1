@@ -1,0 +1,133 @@
+
+mongodb...................................
+
+Create Database companyData
+use companyData
+
+Create Collection salesman
+db.createCollection(“salesman”)
+
+1.db.salesman.insertMany([
+{s_id: 5001, FirstName: "Thilak", LastName: "Perera", City: "Kandy", commission: 0.15 },
+{s_id: 5009, FirstName: "Jagath", LastName: "Peris", City: "Colombo", commission: 0.13 },
+{s_id: 5003, FirstName: "Sandun", LastName: "Peris", City: "Jaffna", commission: 0.14 },
+{s_id: 5002, FirstName: "Mohamed", LastName: "Abi", City: "Trinco", commission: 0.18 },
+{s_id: 5007, FirstName: "Dilruksha", LastName: "Wera", City: "Ampara", commission: 0.11 },
+{s_id: 5005, FirstName: "Sarath", LastName: "Perera", City: "Matara", commission: 0.13 }
+])
+
+
+2. Write a MongoDB statement to display all the information of salesmen and print them.
+db.salesman.find()
+
+3. Write a MongoDB statement to display the FirstName of the salesmen Collection and print them.
+db.salesman.find({},{FirstName:1})
+
+4. Write a mongodb statement to display the Last name without object id of the salesman collection and print them.
+db.salesman.find({},{"LastName":1 , "_id":0})
+
+5. Write all the details related to LasttName is Peris
+db.salesman.find({"LastName":"Peris"})
+
+6. Write all the details related to FirstName is Sandun and City is Jaffna
+db.salesman.find({"FirstName":"Sandun" , "City":"Jaffna"})
+
+7. Update s_id 5005 Person LastName to kumara
+db.salesman.updateOne({"s_id":5005} , {$set:{"LastName":"kumara"}})
+
+8. Update LastName Peris Persons Commissions to 0.99
+db.salesman.updateMany({"LastName":"Peris"}, {$set:{"commission":0.99}})
+
+
+9. Write a MongoDB statement to remove the LastName field & after display the 
+changed view of the salesmen Collection and print all of them.
+db.salesman.updateMany({}, {$unset:{"LastName":1}})
+
+10. Create the new field, called profit and update the following details in an order (30%,29%,48%,7%, 11%, 3%).
+db.salesman.updateMany({}, {$set:{"Profit":""}})
+db.salesman.updateOne({"s_id":5009},{$set:{"Profit":"29%"}})
+db.salesman.find()
+
+11. Write a MongoDB statement to Update the city's name instead of available name with following details.
+
+Kandy → Akurana
+db.salesman.updateOne({"City":"Kandy"},{$set:{"City":"Akurana"}})
+
+Colombo →Moratuwa
+db.salesman.updateOne({"City":"Colombo"},{$set:{"City":"Moratuwa"}})
+
+12.Show City equal to Ampara person details
+db.salesman.find({"City":{$eq:"Ampara"}})
+
+13. Write all the details related to FirstName is Sandun and City is Jaffna
+db.salesman.find({$and:[{"FirstName":"Sandun"},{"City":{$eq:"Jaffna"}}]})
+Find by Letters
+
+14. Show in city firstletter that start with A
+db.salesman.find({"City":/^A/})
+
+15. Show in city lastletter that ends with o
+db.salesman.find({"City":/o/})
+
+16. Show in city “Jaffna using letter finding methods
+db.salesman.find({"City":/^Jaffna$/})
+
+
+
+Aggregation............................................ 
+
+1.Insert data to students database and collection name is details
+db.details.insertMany([
+{ name: "Jhon", age: 17, id: 1, section: "A", subject: ["Physics", "Maths"] },
+{ name: "Steve", age: 37, id: 2, section: "A", subject: [""] },
+{ name: "Mohamed", age: 17, id: 3, section: "B", subject: ["Physics", "English"] },
+{ name: "Perera", age: 21, id: 4, section: "B", subject: ["Physics","Maths", "Biology", "Chemistry"] },
+{ name: "Roman", age: 40, id: 5, section: "B", subject: ["English"] },
+{ name: "Malshan", age: 14, id: 6, section: "A", subject:["English"] },
+{ name: "Shahoon", age: 24, id: 7, section: "A", subject: ["Maths", "Physics", "Chemistry"] }
+])
+
+2. Displaying details of students whose age is less than 20.
+db.details.aggregate([
+{ $match: { age: { $lt: 20 } } }
+]);
+
+3. Sorting the students based on age in ascending order.
+db.details.aggregate([
+{ $sort: { age: 1 } }
+]);
+
+4. Displaying details of a student having the largest age in the section – B
+db.details.aggregate([
+{ $match: { section: 'B' } },
+{ $sort: { age: -1 } },
+{ $limit: 1 }
+]);
+
+5. Displaying the total number of students in section ‘B’
+db.students.aggregate([
+{ $match: { section: "B" } },
+{ $group: { _id: null, totalStudents: { $sum: 1 } } }
+]);
+
+6. Displaying the total number of students in both the sections
+db.details.aggregate([
+{ $group: { _id: "$section", totalStudents: { $sum: 1 } } }
+]);
+
+7. Display the total number of students in both the sections and maximum age from both section
+db.details.aggregate([
+{ $group: { _id: "$section",
+totalStudents: { $sum: 1 },
+maxAge: { $max: "$age" }
+}
+}
+]);
+
+8. Display first 3 data in the dataset
+db.details.aggregate({$skip:3})
+
+9. Sort the name in to ascending order then show the last 4 data
+db.details.aggregate([{$sort:{"age":1}},{$skip:3}])
+
+
